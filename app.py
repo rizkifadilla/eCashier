@@ -26,9 +26,13 @@ def promo():
 def save_promo():
     name_promo = request.form['name_promo']
     promo_value = request.form['promo_value']
-    rand_voucher_code = ''.join((random.choice(string.ascii_uppercase) for x in range(10)))
+    custom_kode_voucher = request.form.get('custom_kode_voucher')
+    if custom_kode_voucher == "on":
+        voucher_code = request.form['voucher_code']
+    else:
+        voucher_code = ''.join((random.choice(string.ascii_uppercase) for x in range(10)))
     sql = "INSERT INTO promo_table (name, voucher_code, promo_value) VALUES (%s, %s,%s)"
-    val = (name_promo, rand_voucher_code, promo_value)
+    val = (name_promo, voucher_code, promo_value)
     cur = mysql.connection.cursor()
     cur.execute(sql, val)
     mysql.connection.commit()

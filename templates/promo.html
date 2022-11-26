@@ -219,6 +219,11 @@
                       <input type="number" class="form-control" name="promo_value" placeholder="Promo Value"
                         aria-label="Promo_Value">
                     </div>
+                    <div class="form-check form-switch">
+                      <input class="form-check-input" type="checkbox" name="custom_kode_voucher" onclick="on_off_form()" id="id_custom_kode_voucher">
+                      <label class="form-check-label" for="id_custom_kode_voucher">Custom Voucher Code</label>
+                    </div>
+                    <div id="voucher_code"></div>
                     <div class="text-center">
                       <button type="submit"
                         class="btn btn-round bg-gradient-success btn-lg w-100 mt-4 mb-0">Save</button>
@@ -247,6 +252,14 @@
         damping: '0.5'
       }
       Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
+    }
+    function on_off_form(){
+      checked = document.getElementById('id_custom_kode_voucher').checked
+      if(checked == true){
+        document.getElementById('voucher_code').innerHTML = '<label>Voucher Code</label> <div class="input-group mb-3"><input type="text" class="form-control" name="voucher_code" placeholder="Voucher Code" aria-label="voucher_code"></div>'
+      }else{
+        document.getElementById('voucher_code').innerHTML = ""
+      }
     }
   </script>
   <!-- Github buttons -->
