@@ -106,12 +106,14 @@ def delete_product(id_product):
 @app.route('/transaction')
 def transaction():
     cur = mysql.connection.cursor()
-    cur.execute("SELECT * FROM product_table")
+    cur.execute("SELECT * FROM product_table WHERE stock > 0")
     data = cur.fetchall()
-    cur.execute("SELECT cart_table.id, product_table.id, product_table.stock, product_table.name,cart_table.purchase_amount,cart_table.total FROM cart_table, product_table WHERE cart_table.product_id = product_table.id AND cart_table.status = 'Belum Selesai'")
+    cur.execute("SELECT cart_table.id, product_table.id, product_table.stock, product_table.name,cart_table.purchase_amount,cart_table.total,cart_table.transaction_id FROM cart_table, product_table WHERE cart_table.product_id = product_table.id AND cart_table.status = 'Belum Selesai'")
     data_cart = cur.fetchall()
+    cur.execute("SELECT SUM(cart_table.total) as total_all FROM cart_table, product_table WHERE cart_table.product_id = product_table.id AND cart_table.status = 'Belum Selesai'")
+    total_all = cur.fetchall()
     cur.close()
-    return render_template('transaction.html', products = data, carts = data_cart)
+    return render_template('transaction.html', products = data, carts = data_cart, total_all = total_all)
 
 @app.route('/save_cart', methods=["POST"])
 def save_cart():
@@ -145,7 +147,7 @@ def save_cart():
 def delete_cart(id_cart,purchase_amount,product_stock,id_product):
     update_stock = int(purchase_amount) + int(product_stock)
     sql = "DELETE FROM cart_table WHERE id=%s"
-    val = (id_cart)
+    val = [id_cart]
     cur = mysql.connection.cursor()
     cur.execute(sql, val)
     sql_update = "UPDATE product_table SET stock=%s WHERE id=%s"
@@ -153,6 +155,41 @@ def delete_cart(id_cart,purchase_amount,product_stock,id_product):
     cur.execute(sql_update, val_update)
     mysql.connection.commit()
     return redirect(url_for('transaction'))
+
+@app.route('/transaction-modal', methods=["POST","GET"])
+def transaction_modal():
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM product_table WHERE stock > 0")
+    data = cur.fetchall()
+    cur.execute("SELECT cart_table.id, product_table.id, product_table.stock, product_table.name,cart_table.purchase_amount,cart_table.total,cart_table.transaction_id FROM cart_table, product_table WHERE cart_table.product_id = product_table.id AND cart_table.status = 'Belum Selesai'")
+    data_cart = cur.fetchall()
+    cur.execute("SELECT SUM(cart_table.total) as total_all FROM cart_table, product_table WHERE cart_table.product_id = product_table.id AND cart_table.status = 'Belum Selesai'")
+    total_all = cur.fetchall()
+    
+    if request.method == 'POST':
+        money_received = request.form['money_received']
+        transaction_id = request.form['transaction_id']
+        total_amount = request.form['total_amount']
+        voucher_code = "0"
+        payment_method = "Cash"
+        status = "Paid"
+        sql = "INSERT INTO transaction_table (transaction_id, total_amount, voucher_code, payment_method, status) VALUES (%s, %s, %s, %s, %s)"
+        val = (transaction_id, total_amount, voucher_code, payment_method, status)
+        cur.execute(sql, val)
+        mysql.connection.commit()
+        change = int(money_received) - int(total_amount)
+        data_detail_payment = {
+            "money_received" : money_received,
+            "change" : change,
+            "total_payment" : total_amount
+        }
+        sql_update = "UPDATE cart_table SET status=%s WHERE status=%s"
+        val_update = ("Selesai","Belum Selesai")
+        cur.execute(sql_update, val_update)
+        mysql.connection.commit()
+        cur.close()
+    cur.close()
+    return render_template('transaction_modal.html', products = data, carts = data_cart, total_all = total_all, data_detail_payment = data_detail_payment)
 
 
 if __name__ == '__main__':
