@@ -21,10 +21,10 @@
     <link id="pagestyle" href="{{ url_for('static',filename='assets/css/argon-dashboard.css') }}" rel="stylesheet">
 </head>
 
-<body class="g-sidenav-show   bg-gray-100">
+<body class="g-sidenav-show bg-gray-100">
     <div class="min-height-300 bg-primary position-absolute w-100"></div>
     <aside
-        class="sidenav bg-white navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-4 "
+        class="sidenav bg-white navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-4"
         id="sidenav-main">
         <div class="sidenav-header">
             <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none"
@@ -37,7 +37,7 @@
             </a>
         </div>
         <hr class="horizontal dark mt-0">
-        <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main">
+        <div class="collapse navbar-collapse w-auto" id="sidenav-collapse-main">
             <ul class="navbar-nav">
                 <li class="nav-item">
                     <a class="nav-link" href="/">
@@ -58,7 +58,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" href="/product">
+                    <a class="nav-link" href="/product">
                         <div
                             class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                             <i class="ni ni-box-2 text-info text-sm opacity-10"></i>
@@ -76,7 +76,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/transaction-history">
+                    <a class="nav-link active" href="/transaction-history">
                         <div
                             class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                             <i class="ni ni-books text-danger text-sm opacity-10"></i>
@@ -96,9 +96,10 @@
                     <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
                         <li class="breadcrumb-item text-sm"><a class="opacity-5 text-white"
                                 href="javascript:;">Pages</a></li>
-                        <li class="breadcrumb-item text-sm text-white active" aria-current="page">Product</li>
+                        <li class="breadcrumb-item text-sm text-white active" aria-current="page">Transaction History
+                        </li>
                     </ol>
-                    <h6 class="font-weight-bolder text-white mb-0">Product</h6>
+                    <h6 class="font-weight-bolder text-white mb-0">Transaction History</h6>
                 </nav>
                 <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
                     <div class="ms-md-auto pe-md-3 d-flex align-items-center">
@@ -128,11 +129,7 @@
                         <div class="card-header pb-0">
                             <div class="row">
                                 <div class="col-9">
-                                    <h6>Product table</h6>
-                                </div>
-                                <div class="col-3">
-                                    <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal"
-                                        data-bs-target="#modal-form">Add Product</button>
+                                    <h6>transaction history table</h6>
                                 </div>
                             </div>
                         </div>
@@ -143,28 +140,28 @@
                                         <tr>
                                             <th
                                                 class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                Name</th>
-                                            <th style="max-width: 50px; word-wrap: break-word;"
+                                                Transaction ID</th>
+                                            <th
                                                 class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                                Description
+                                                Total Amount
                                             </th>
                                             <th
                                                 class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                                Stock
+                                                Voucher Code
                                             </th>
                                             <th
                                                 class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                                Price
+                                                Payment Method
                                             </th>
                                             <th
                                                 class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                                Image
+                                                Created At
                                             </th>
                                             <th class="text-secondary opacity-7"></th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {% for row in products %}
+                                        {% for row in transaction_historys %}
                                         <tr>
                                             <td>
                                                 <div class="d-flex px-2 py-1">
@@ -173,10 +170,8 @@
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td class="align-middle text-sm"
-                                                style="max-width: 100px; word-wrap: break-word;">
-                                                <span
-                                                    class="text-secondary text-xs font-weight-bold">{{ (row.2[:20] + '...') }}</span>
+                                            <td class="align-middle">
+                                                <span class="text-secondary text-xs font-weight-bold">{{ row.2 }}</span>
                                             </td>
                                             <td class="align-middle">
                                                 <span class="text-secondary text-xs font-weight-bold">{{ row.3 }}</span>
@@ -185,70 +180,13 @@
                                                 <span class="text-secondary text-xs font-weight-bold">{{ row.4 }}</span>
                                             </td>
                                             <td class="align-middle">
-                                                <span class="text-secondary text-xs font-weight-bold">{{ row.5 }}</span>
+                                                <span class="text-secondary text-xs font-weight-bold">{{ row.6 }}</span>
                                             </td>
                                             <td class="align-middle">
-                                                <a href="#!" type="button" class="btn btn-sm btn-warning"
-                                                    data-bs-toggle="modal"
-                                                    data-bs-target="#modal-form-edit{{ row.0 }}">Edit</a>
-                                                <a href="/delete_product/{{ row.0 }}" type="button"
-                                                    class="btn btn-sm btn-danger"
-                                                    onclick="return confirm('Are You Sure?')">Delete</a>
+                                                <a href="/transaction-history-details-modal/{{ row.1 }}" type="button"
+                                                    class="btn btn-sm btn-primary">Detail</a>
                                             </td>
                                         </tr>
-                                        <!-- Start Modal Edit -->
-                                        <div class="modal fade" id="modal-form-edit{{ row.0 }}" tabindex="-1"
-                                            role="dialog" aria-labelledby="modal-form" aria-hidden="true">
-                                            <div class="modal-dialog modal-dialog-centered modal-md" role="document">
-                                                <div class="modal-content">
-                                                    <div class="modal-body p-0">
-                                                        <div class="card card-plain">
-                                                            <div class="card-header pb-0 text-left">
-                                                                <h3 class="font-weight-bolder text-info text-gradient">
-                                                                    Edit product Data</h3>
-                                                                <p class="mb-0">Edit your product data here</p>
-                                                            </div>
-                                                            <div class="card-body">
-                                                                <form action="{{ url_for('update_product') }}"
-                                                                    method="POST" role="form text-left">
-                                                                    <input type="hidden" name="id" value="{{ row.0 }}">
-                                                                    <label>Name</label>
-                                                                    <div class="input-group mb-3">
-                                                                        <input type="text" class="form-control"
-                                                                            name="name" placeholder="Name"
-                                                                            aria-label="Name" value="{{ row.1 }}">
-                                                                    </div>
-                                                                    <label>Description</label>
-                                                                    <div class="input-group mb-3">
-                                                                        <textarea type="text" class="form-control"
-                                                                            name="description" placeholder="Description"
-                                                                            aria-label="Description"
-                                                                            rows="3">{{ row.2 }}</textarea>
-                                                                    </div>
-                                                                    <label>Stock</label>
-                                                                    <div class="input-group mb-3">
-                                                                        <input type="number" class="form-control"
-                                                                            name="stock" placeholder="Stock"
-                                                                            aria-label="Stock" value="{{ row.3 }}">
-                                                                    </div>
-                                                                    <label>Price</label>
-                                                                    <div class="input-group mb-3">
-                                                                        <input type="number" class="form-control"
-                                                                            name="price" placeholder="Price"
-                                                                            aria-label="Price" value="{{ row.4 }}">
-                                                                    </div>
-                                                                    <div class="text-center">
-                                                                        <button type="submit"
-                                                                            class="btn btn-round bg-gradient-warning btn-lg w-100 mt-4 mb-0">Update</button>
-                                                                    </div>
-                                                                </form>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- End Modal Edit -->
                                         {% endfor %}
                                     </tbody>
                                 </table>
@@ -257,51 +195,7 @@
                     </div>
                 </div>
             </div>
-            <!-- Start Modal Add -->
-            <div class="modal fade" id="modal-form" tabindex="-1" role="dialog" aria-labelledby="modal-form"
-                aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered modal-md" role="document">
-                    <div class="modal-content">
-                        <div class="modal-body p-0">
-                            <div class="card card-plain">
-                                <div class="card-header pb-0 text-left">
-                                    <h3 class="font-weight-bolder text-info text-gradient">Add product Data</h3>
-                                    <p class="mb-0">Enter your product data here</p>
-                                </div>
-                                <div class="card-body">
-                                    <form action="{{ url_for('save_product') }}" method="POST" role="form text-left">
-                                        <label>Name</label>
-                                        <div class="input-group mb-3">
-                                            <input type="text" class="form-control" name="name" placeholder="Name"
-                                                aria-label="Name">
-                                        </div>
-                                        <label>Description</label>
-                                        <div class="input-group mb-3">
-                                            <textarea type="text" class="form-control" name="description"
-                                                placeholder="Description" aria-label="Description" rows="3"></textarea>
-                                        </div>
-                                        <label>Stock</label>
-                                        <div class="input-group mb-3">
-                                            <input type="number" class="form-control" name="stock" placeholder="Stock"
-                                                aria-label="Stock">
-                                        </div>
-                                        <label>Price</label>
-                                        <div class="input-group mb-3">
-                                            <input type="number" class="form-control" name="price" placeholder="Price"
-                                                aria-label="Price">
-                                        </div>
-                                        <div class="text-center">
-                                            <button type="submit"
-                                                class="btn btn-round bg-gradient-success btn-lg w-100 mt-4 mb-0">Save</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- End Modal Add -->
+            {% block modal %}{% endblock %}
         </div>
     </main>
     <!--   Core JS Files   -->
@@ -318,6 +212,16 @@
                 damping: '0.5'
             }
             Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
+        }
+
+        function on_off_form() {
+            checked = document.getElementById('id_custom_kode_voucher').checked
+            if (checked == true) {
+                document.getElementById('voucher_code').innerHTML =
+                    '<label>Voucher Code</label> <div class="input-group mb-3"><input type="text" class="form-control" name="voucher_code" placeholder="Voucher Code" aria-label="voucher_code"></div>'
+            } else {
+                document.getElementById('voucher_code').innerHTML = ""
+            }
         }
     </script>
     <!-- Github buttons -->

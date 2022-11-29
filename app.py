@@ -191,6 +191,26 @@ def transaction_modal():
     cur.close()
     return render_template('transaction_modal.html', products = data, carts = data_cart, total_all = total_all, data_detail_payment = data_detail_payment)
 
+@app.route('/transaction-history')
+def transaction_history():
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM transaction_table ORDER BY created_at DESC")
+    data = cur.fetchall()
+    cur.close()
+    return render_template('transaction_history.html', transaction_historys = data)
+
+@app.route('/transaction-history-details-modal/<string:transaction_id>', methods=["GET"])
+def transaction_history_details_modal(transaction_id):
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM transaction_table ORDER BY created_at DESC")
+    data = cur.fetchall()
+    cur.execute("SELECT cart_table.id, product_table.id, product_table.stock, product_table.name,cart_table.purchase_amount,cart_table.total,cart_table.transaction_id FROM cart_table, product_table WHERE cart_table.product_id = product_table.id AND cart_table.transaction_id = %s",[transaction_id])
+    data_cart = cur.fetchall()
+    cur.execute("SELECT SUM(cart_table.total) as total_all FROM cart_table, product_table WHERE cart_table.product_id = product_table.id AND cart_table.transaction_id = %s",[transaction_id])
+    total_all = cur.fetchall()
+    cur.close()
+    return render_template('transaction_history_details_modal.html', transaction_historys = data, carts = data_cart, total_all = total_all)
+
 
 if __name__ == '__main__':
     app.run(debug = True)

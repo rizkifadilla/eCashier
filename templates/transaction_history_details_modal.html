@@ -1,0 +1,57 @@
+{% extends 'transaction_history.html' %}
+{% block modal %}
+<!-- Start Modal cart history -->
+<div class="modal fade show" id="modal-form" tabindex="-1" aria-labelledby="modal-form" style="display: block;"
+    aria-modal="true" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-body p-0">
+                <div class="card card-plain">
+                    <div class="card-header pb-0 text-center">
+                        <h3 class="font-weight-bolder text-info text-gradient">Transaction History</h3>
+                        <p class="mb-0">Cart Table</p>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-4"><span class="text-secondary text-xs font-weight-bold">Name</span>
+                            </div>
+                            <div class="col-4"><span class="text-secondary text-xs font-weight-bold">Amount</span>
+                            </div>
+                            <div class="col-4"><span class="text-secondary text-xs font-weight-bold">Total</span>
+                            </div>
+                            {% for row in carts %}
+                            <div class="col-4">
+                                <span class="text-secondary text-xs">{{ row.3 }}</span>
+                            </div>
+                            <div class="col-4"><span class="text-secondary text-xs">{{ row.4 }}</span>
+                            </div>
+                            <div class="col-4"><span class="text-secondary text-xs">{{ row.5 }}</span>
+                            </div>
+                            {% endfor %}
+                            <hr class="horizontal dark mt-3">
+                            <div class="col-8">
+                                <span class="text-secondary text-xs font-weight-bold">
+                                    Total All
+                                </span>
+                            </div>
+                            <div class="col-4">
+                                <span class="text-secondary text-xs font-weight-bold">
+                                    {% if total_all[0].0 %}
+                                    {{ total_all[0].0 }}
+                                    {% endif %}
+                                </span>
+                            </div>
+                            <div class="text-center">
+                                <a href="{{ url_for('transaction_history') }}"
+                                    class="btn btn-round bg-gradient-danger btn-lg w-100 mt-4 mb-0">Close</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-backdrop show"></div>
+<!-- End Modal cart history -->
+{% endblock %}
