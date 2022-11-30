@@ -179,9 +179,9 @@ def transaction_modal():
         mysql.connection.commit()
         change = int(money_received) - int(total_amount)
         data_detail_payment = {
-            "money_received" : money_received,
-            "change" : change,
-            "total_payment" : total_amount
+            "money_received" : format(int(money_received),","),
+            "change" : format(int(change),","),
+            "total_payment" : format(int(total_amount),",")
         }
         sql_update = "UPDATE cart_table SET status=%s WHERE status=%s"
         val_update = ("Selesai","Belum Selesai")

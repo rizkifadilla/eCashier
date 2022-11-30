@@ -178,7 +178,7 @@
                                                 <span class="text-secondary text-xs font-weight-bold">{{ row.3 }}</span>
                                             </td>
                                             <td class="align-middle">
-                                                <span class="text-secondary text-xs font-weight-bold">{{ row.4 }}</span>
+                                                <span class="text-secondary text-xs font-weight-bold">{{ "{:,}".format(row.4) }}</span>
                                             </td>
                                             <td class="align-middle">
                                                 <span class="text-secondary text-xs font-weight-bold">{{ row.5 }}</span>
@@ -260,7 +260,7 @@
                                     </div>
                                     <div class="col-3"><span class="text-secondary text-xs">{{ row.4 }}</span>
                                     </div>
-                                    <div class="col-3"><span class="text-secondary text-xs">{{ row.5 }}</span>
+                                    <div class="col-3"><span class="text-secondary text-xs">{{ "{:,}".format(row.5) }}</span>
                                     </div>
                                     <div class="col-3"><a
                                             href="/delete_cart/{{ row.0 }}/{{ row.4 }}/{{ row.2 }}/{{ row.1 }}"
@@ -313,7 +313,7 @@
                                     <div class="col-3">
                                         <span class="text-secondary text-xs font-weight-bold">
                                             {% if total_all[0].0 %}
-                                            {{ total_all[0].0 }}
+                                            {{ "{:,}".format(total_all[0].0) }}
                                             {% endif %}
                                         </span>
                                     </div>
