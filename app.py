@@ -229,10 +229,14 @@ def transaction_history_details_modal(transaction_id):
     data = cur.fetchall()
     cur.execute("SELECT cart_table.id, product_table.id, product_table.stock, product_table.name,cart_table.purchase_amount,cart_table.total,cart_table.transaction_id FROM cart_table, product_table WHERE cart_table.product_id = product_table.id AND cart_table.transaction_id = %s",[transaction_id])
     data_cart = cur.fetchall()
-    cur.execute("SELECT SUM(cart_table.total) as total_all FROM cart_table, product_table WHERE cart_table.product_id = product_table.id AND cart_table.transaction_id = %s",[transaction_id])
+    cur.execute("SELECT * FROM transaction_table WHERE transaction_id = %s", [transaction_id])
     total_all = cur.fetchall()
+    total_all_array = np.asarray(total_all)
+    promo_code = total_all_array[0][3]
+    cur.execute("SELECT * FROM promo_table WHERE voucher_code = %s", [promo_code])
+    discount = cur.fetchall()
     cur.close()
-    return render_template('transaction_history_details_modal.html', transaction_historys = data, carts = data_cart, total_all = total_all)
+    return render_template('transaction_history_details_modal.html', transaction_historys = data, carts = data_cart, total_all = total_all, discount = discount)
 
 
 if __name__ == '__main__':

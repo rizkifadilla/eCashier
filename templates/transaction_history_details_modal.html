@@ -31,13 +31,27 @@
                             <hr class="horizontal dark mt-3">
                             <div class="col-8">
                                 <span class="text-secondary text-xs font-weight-bold">
+                                    Discount
+                                </span>
+                            </div>
+                            <div class="col-4">
+                                <span class="text-secondary text-xs font-weight-bold">
+                                    {% if discount %}
+                                    {{ "{:,}".format(discount[0].3) }}%
+                                    {% else %}
+                                    0%
+                                    {% endif %}
+                                </span>
+                            </div>
+                            <div class="col-8">
+                                <span class="text-secondary text-xs font-weight-bold">
                                     Total All
                                 </span>
                             </div>
                             <div class="col-4">
                                 <span class="text-secondary text-xs font-weight-bold">
-                                    {% if total_all[0].0 %}
-                                    {{ "{:,}".format(total_all[0].0) }}
+                                    {% if total_all[0].2 %}
+                                    {{ "{:,}".format(total_all[0].2) }}
                                     {% endif %}
                                 </span>
                             </div>
