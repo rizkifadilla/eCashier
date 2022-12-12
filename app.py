@@ -1,7 +1,8 @@
-from flask import Flask, render_template, request, url_for, redirect
+from flask import Flask, render_template, request, url_for, redirect, jsonify
 from flask_mysqldb import MySQL
 import random  
-import string  
+import string
+import numpy as np
 
 app = Flask(__name__)
 app.config['MYSQL_HOST'] = 'localhost'
@@ -12,7 +13,7 @@ mysql = MySQL(app)
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    return redirect(url_for('transaction'))
 
 @app.route('/promo')
 def promo():
@@ -112,8 +113,13 @@ def transaction():
     data_cart = cur.fetchall()
     cur.execute("SELECT SUM(cart_table.total) as total_all FROM cart_table, product_table WHERE cart_table.product_id = product_table.id AND cart_table.status = 'Belum Selesai'")
     total_all = cur.fetchall()
+    cur.execute("SELECT voucher_code FROM promo_table")
+    promo_list = cur.fetchall()
+    cur.execute("SELECT voucher_code,promo_value FROM promo_table")
+    promo_list_value = cur.fetchall()
     cur.close()
-    return render_template('transaction.html', products = data, carts = data_cart, total_all = total_all)
+    # print("PROMO LIST ===>",promo_list_array[0])
+    return render_template('transaction.html', products = data, carts = data_cart, total_all = total_all, promo_list = promo_list, promo_list_value = promo_list_value)
 
 @app.route('/save_cart', methods=["POST"])
 def save_cart():

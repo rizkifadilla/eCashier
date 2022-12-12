@@ -13,15 +13,19 @@
                     </div>
                     <div class="card-body">
                         <div class="row">
+                            <!-- <div class="col-5">discount</div>
+                            <div class="col-1">:</div>
+                            <div class="col-6">{{ data_detail_payment.discount }}%</div> -->
                             <div class="col-5">Total Payment</div>
                             <div class="col-1">:</div>
                             <div class="col-6">Rp. {{ data_detail_payment.total_payment }}</div>
                             <div class="col-5">money received</div>
                             <div class="col-1">:</div>
                             <div class="col-6">Rp. {{ data_detail_payment.money_received }}</div>
-                            <div class="col-5">change</div>
-                            <div class="col-1">:</div>
-                            <div class="col-6">Rp. {{ data_detail_payment.change }}</div>
+                            <center >
+                                <p>Change</p>
+                                <h3>Rp. {{ data_detail_payment.change }}</h3>
+                            </center>
                         </div>
                         <div class="text-center">
                             <a href="{{ url_for('transaction') }}"

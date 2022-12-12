@@ -39,7 +39,7 @@
         <hr class="horizontal dark mt-0">
         <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main">
             <ul class="navbar-nav">
-                <li class="nav-item">
+                <!-- <li class="nav-item">
                     <a class="nav-link" href="/">
                         <div
                             class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
@@ -47,7 +47,7 @@
                         </div>
                         <span class="nav-link-text ms-1">Dashboard</span>
                     </a>
-                </li>
+                </li> -->
                 <li class="nav-item">
                     <a class="nav-link active" href="/transaction">
                         <div
@@ -178,7 +178,8 @@
                                                 <span class="text-secondary text-xs font-weight-bold">{{ row.3 }}</span>
                                             </td>
                                             <td class="align-middle">
-                                                <span class="text-secondary text-xs font-weight-bold">{{ "{:,}".format(row.4) }}</span>
+                                                <span
+                                                    class="text-secondary text-xs font-weight-bold">{{ "{:,}".format(row.4) }}</span>
                                             </td>
                                             <td class="align-middle">
                                                 <span class="text-secondary text-xs font-weight-bold">{{ row.5 }}</span>
@@ -260,7 +261,8 @@
                                     </div>
                                     <div class="col-3"><span class="text-secondary text-xs">{{ row.4 }}</span>
                                     </div>
-                                    <div class="col-3"><span class="text-secondary text-xs">{{ "{:,}".format(row.5) }}</span>
+                                    <div class="col-3"><span
+                                            class="text-secondary text-xs">{{ "{:,}".format(row.5) }}</span>
                                     </div>
                                     <div class="col-3"><a
                                             href="/delete_cart/{{ row.0 }}/{{ row.4 }}/{{ row.2 }}/{{ row.1 }}"
@@ -281,14 +283,31 @@
                                                         <div class="card-body">
                                                             <form action="{{ url_for('transaction_modal') }}"
                                                                 method="POST" role="form text-left">
-                                                                <input type="hidden" name="transaction_id" value="{{ row.6 }}">
-                                                                <input type="hidden" name="total_amount" value="{{ total_all[0].0 }}">
+                                                                <input type="hidden" name="transaction_id"
+                                                                    value="{{ row.6 }}">
+                                                                <input type="hidden" name="total_amount"
+                                                                    value="{{ total_all[0].0 }}">
                                                                 <label>money received</label>
                                                                 <div class="input-group mb-3">
                                                                     <input type="number" class="form-control"
                                                                         name="money_received"
                                                                         placeholder="Money Received"
-                                                                        aria-label="Money_Received">
+                                                                        aria-label="Money_Received" id="received_money">
+                                                                </div>
+                                                                <label>promo code</label>
+                                                                <div class="input-group input-group-alternative mb-4">
+                                                                    <input class="form-control" placeholder="promo code"
+                                                                        type="text" name="promo_code" id="code_promo">
+                                                                    <span
+                                                                        class="input-group-text bg-gradient-warning"><a
+                                                                            href="#" onclick="cek_promo()"
+                                                                            class="text-white">CEK PROMO</a></span>
+                                                                </div>
+                                                                <div id="parent_total_payment">
+                                                                    <center id="total_payment">
+                                                                        <p>Total Payment</p>
+                                                                        <h3>Rp. {{ "{:,}".format(total_all[0].0) }}</h3>
+                                                                    </center>
                                                                 </div>
                                                                 <div class="text-center">
                                                                     <button type="submit"
@@ -343,6 +362,38 @@
                 damping: '0.5'
             }
             Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
+        }
+        var list_promo_code = {{ promo_list|tojson }}
+        var list_promo_value = {{ promo_list_value|tojson }}
+        var list_promo_code_flat = [].concat.apply([], list_promo_code)
+        
+        // KAS5362FCDGA
+        function cek_promo() {
+            total_all_flask = {{ total_all|tojson }}
+            var element_promo_code = document.getElementById('code_promo')
+            if (list_promo_code_flat.includes(element_promo_code.value)){
+                element_promo_code.classList.remove("is-invalid");
+                element_promo_code.classList.add("is-valid");
+                element_total_payment = document.getElementById('total_payment')
+                element_total_payment.remove()
+                indexof_promo_code = list_promo_code_flat.indexOf(element_promo_code.value)
+                get_value = list_promo_value[indexof_promo_code][1]
+                get_promo_price = get_value / 100 * total_all_flask[0][0]
+                price_after_promo = total_all_flask[0][0] - get_promo_price
+                var	number_string = price_after_promo.toString(),
+                    remainder 	= number_string.length % 3,
+                    rupiah 	    = number_string.substr(0, remainder),
+                    thousand    = number_string.substr(remainder).match(/\d{3}/g);
+                        
+                if (thousand) {
+                    separator = remainder ? '.' : '';
+                    rupiah += separator + thousand.join(',');
+                }
+                document.getElementById('parent_total_payment').innerHTML = '<center id="total_payment"><p>Total Payment</p><p><small>Discount '+get_value+'%</small></p><h6><s>Rp. {{ "{:,}".format(total_all[0].0) }}</s></h6><h3>Rp. '+rupiah+'</h3></center>';
+            } else {
+                element_promo_code.classList.remove("is-valid");
+                element_promo_code.classList.add("is-invalid");
+            }
         }
     </script>
     <!-- Github buttons -->
