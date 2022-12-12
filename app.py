@@ -171,31 +171,48 @@ def transaction_modal():
     data_cart = cur.fetchall()
     cur.execute("SELECT SUM(cart_table.total) as total_all FROM cart_table, product_table WHERE cart_table.product_id = product_table.id AND cart_table.status = 'Belum Selesai'")
     total_all = cur.fetchall()
-    
+    cur.execute("SELECT voucher_code FROM promo_table")
+    promo_list = cur.fetchall()
+    cur.execute("SELECT voucher_code,promo_value FROM promo_table")
+    promo_list_value = cur.fetchall()
     if request.method == 'POST':
         money_received = request.form['money_received']
         transaction_id = request.form['transaction_id']
         total_amount = request.form['total_amount']
+        promo_code = request.form['promo_code']
+        promo_value = request.form['promo_value']
         voucher_code = "0"
         payment_method = "Cash"
         status = "Paid"
-        sql = "INSERT INTO transaction_table (transaction_id, total_amount, voucher_code, payment_method, status) VALUES (%s, %s, %s, %s, %s)"
-        val = (transaction_id, total_amount, voucher_code, payment_method, status)
+        if promo_value != '':
+            print("PAKE PROMO")
+            discount = promo_value
+            total_amount_promo = int(total_amount) - (int(promo_value) / 100 * int(total_amount))
+            print("total_amount_promo ====>", total_amount_promo)
+            change = int(money_received) - int(total_amount_promo)
+            sql = "INSERT INTO transaction_table (transaction_id, total_amount, voucher_code, payment_method, status) VALUES (%s, %s, %s, %s, %s)"
+            val = (transaction_id, total_amount_promo, promo_code, payment_method, status)
+        else:
+            print("GAPAKE PROMO")
+            discount = 0
+            total_amount_promo = total_amount
+            change = int(money_received) - int(total_amount)
+            sql = "INSERT INTO transaction_table (transaction_id, total_amount, voucher_code, payment_method, status) VALUES (%s, %s, %s, %s, %s)"
+            val = (transaction_id, total_amount, voucher_code, payment_method, status)
         cur.execute(sql, val)
         mysql.connection.commit()
-        change = int(money_received) - int(total_amount)
-        data_detail_payment = {
-            "money_received" : format(int(money_received),","),
-            "change" : format(int(change),","),
-            "total_payment" : format(int(total_amount),",")
-        }
         sql_update = "UPDATE cart_table SET status=%s WHERE status=%s"
         val_update = ("Selesai","Belum Selesai")
         cur.execute(sql_update, val_update)
         mysql.connection.commit()
-        cur.close()
+        data_detail_payment = {
+                "money_received" : format(int(money_received),","),
+                "change" : format(int(change),","),
+                "total_payment" : format(int(total_amount_promo),","),
+                "discount" : int(discount)
+            }
     cur.close()
-    return render_template('transaction_modal.html', products = data, carts = data_cart, total_all = total_all, data_detail_payment = data_detail_payment)
+    return render_template('transaction_modal.html', products = data, carts = data_cart, total_all = total_all, data_detail_payment = data_detail_payment, promo_list = promo_list, promo_list_value = promo_list_value)
 
 @app.route('/transaction-history')
 def transaction_history():

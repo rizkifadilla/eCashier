@@ -306,7 +306,7 @@
                                                                 <div id="parent_total_payment">
                                                                     <center id="total_payment">
                                                                         <p>Total Payment</p>
-                                                                        <h3>Rp. {{ "{:,}".format(total_all[0].0) }}</h3>
+                                                                        <h3>Rp. {% if total_all[0].0 %}{{ "{:,}".format(total_all[0].0) }}{% endif %}</h3>
                                                                     </center>
                                                                 </div>
                                                                 <div class="text-center">
@@ -320,7 +320,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <!-- End Modal paymentt -->
+                                    <!-- End Modal payment -->
                                     {% endfor %}
                                     <!-- <hr style="height:2px;border-width:0;color:gray;background-color:gray" class="mt-3"> -->
                                     <hr class="horizontal dark mt-0">
@@ -389,7 +389,7 @@
                     separator = remainder ? '.' : '';
                     rupiah += separator + thousand.join(',');
                 }
-                document.getElementById('parent_total_payment').innerHTML = '<center id="total_payment"><p>Total Payment</p><p><small>Discount '+get_value+'%</small></p><h6><s>Rp. {{ "{:,}".format(total_all[0].0) }}</s></h6><h3>Rp. '+rupiah+'</h3></center>';
+                document.getElementById('parent_total_payment').innerHTML = '<center id="total_payment"><input type="hidden" name="promo_value" value="'+get_value+'"><p>Total Payment</p><p><small>Discount '+get_value+'%</small></p><h6><s>Rp. {% if total_all[0].0 %}{{ "{:,}".format(total_all[0].0) }}{% endif %}</s></h6><h3>Rp. '+rupiah+'</h3></center>';
             } else {
                 element_promo_code.classList.remove("is-valid");
                 element_promo_code.classList.add("is-invalid");
